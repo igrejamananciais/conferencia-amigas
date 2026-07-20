@@ -15,10 +15,24 @@
     const script = document.createElement("script");
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    script.addEventListener("load", sendLandingVisitEvent, { once: true });
     document.head.appendChild(script);
 
     window.gtag("js", new Date());
     window.gtag("config", measurementId);
+  }
+
+  function sendLandingVisitEvent() {
+    const searchParams = new URLSearchParams(window.location.search);
+
+    window.gtag("event", "landing_visit", {
+      utm_source: searchParams.get("utm_source") || "",
+      utm_medium: searchParams.get("utm_medium") || "",
+      utm_campaign: searchParams.get("utm_campaign") || "",
+      utm_content: searchParams.get("utm_content") || "",
+      page_location: window.location.href,
+      debug_mode: true
+    });
   }
 
   function initGoogleAnalytics() {
