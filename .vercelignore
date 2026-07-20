@@ -1,0 +1,15 @@
+.DS_Store
+.git/
+.env*
+.vercel/
+.next/
+.pnpm-store/
+node_modules/
+
+# Local archives and exported source images that are not part of the final static landing.
+*.tgz
+*.psd
+*.ai
+*.zip
+Prancheta *.png
+Artboard *.png

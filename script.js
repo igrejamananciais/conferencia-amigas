@@ -4,6 +4,35 @@
   const nav = document.querySelector("[data-nav]");
   const revealItems = document.querySelectorAll(".reveal");
 
+  function loadGoogleAnalytics(measurementId) {
+    if (!measurementId || window.gtag) return;
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function gtag() {
+      window.dataLayer.push(arguments);
+    };
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    document.head.appendChild(script);
+
+    window.gtag("js", new Date());
+    window.gtag("config", measurementId);
+  }
+
+  function initGoogleAnalytics() {
+    fetch("/api/ga-id")
+      .then((response) => {
+        if (!response.ok) return null;
+        return response.json();
+      })
+      .then((data) => {
+        if (data && data.measurementId) loadGoogleAnalytics(data.measurementId);
+      })
+      .catch(() => {});
+  }
+
   function updateHeader() {
     header.classList.toggle("is-scrolled", window.scrollY > 18);
   }
@@ -38,5 +67,6 @@
   }
 
   window.addEventListener("scroll", updateHeader, { passive: true });
+  initGoogleAnalytics();
   updateHeader();
 }());
