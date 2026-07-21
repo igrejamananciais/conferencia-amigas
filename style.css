@@ -609,16 +609,19 @@ img {
   margin-left: 50%;
   overflow: hidden;
   transform: translateX(-50%);
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.program-photo-marquee.is-dragging {
+  cursor: grabbing;
 }
 
 .program-photo-track {
   display: flex;
   width: max-content;
-  animation: photoMarquee 96s linear infinite;
-}
-
-.program-photo-marquee:hover .program-photo-track {
-  animation-play-state: paused;
+  will-change: transform;
 }
 
 .program-photo {
@@ -819,17 +822,6 @@ img {
   0% { opacity: 0; transform: translateY(0); }
   35% { opacity: 1; }
   100% { opacity: 0; transform: translateY(22px); }
-}
-
-@keyframes photoMarquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .program-photo-track {
-    animation: none;
-  }
 }
 
 @media (max-width: 1040px) {

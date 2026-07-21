@@ -53,14 +53,96 @@
 
   function initPhotoMarquee() {
     const track = document.querySelector("[data-photo-track]");
-    if (!track || track.dataset.marqueeReady) return;
+    const marquee = track && track.closest(".program-photo-marquee");
+    if (!track || !marquee || track.dataset.marqueeReady) return;
 
-    Array.from(track.children).forEach((item) => {
+    const originalItems = Array.from(track.children);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let loopWidth = 0;
+    let offset = 0;
+    let lastTime = 0;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartOffset = 0;
+
+    originalItems.forEach((item) => {
+      const image = item.querySelector("img");
+      if (image) image.setAttribute("draggable", "false");
+
       const clone = item.cloneNode(true);
       clone.setAttribute("aria-hidden", "true");
+      const cloneImage = clone.querySelector("img");
+      if (cloneImage) cloneImage.setAttribute("draggable", "false");
       track.appendChild(clone);
     });
 
+    function measureLoop() {
+      loopWidth = originalItems.reduce((total, item) => total + item.getBoundingClientRect().width, 0);
+    }
+
+    function normalizeOffset() {
+      if (!loopWidth) return;
+      offset %= loopWidth;
+      if (offset < 0) offset += loopWidth;
+    }
+
+    function render() {
+      track.style.transform = `translate3d(${-offset}px, 0, 0)`;
+    }
+
+    function animate(time) {
+      if (!loopWidth) measureLoop();
+
+      if (!isDragging && !reduceMotion) {
+        const elapsed = lastTime ? Math.min(time - lastTime, 64) : 0;
+        offset += elapsed * 0.045;
+        normalizeOffset();
+        render();
+      }
+
+      lastTime = time;
+      requestAnimationFrame(animate);
+    }
+
+    marquee.addEventListener("pointerdown", (event) => {
+      isDragging = true;
+      dragStartX = event.clientX;
+      dragStartOffset = offset;
+      lastTime = 0;
+      marquee.classList.add("is-dragging");
+      marquee.setPointerCapture(event.pointerId);
+    });
+
+    marquee.addEventListener("pointermove", (event) => {
+      if (!isDragging) return;
+
+      offset = dragStartOffset - (event.clientX - dragStartX);
+      normalizeOffset();
+      render();
+    });
+
+    function stopDragging(event) {
+      if (!isDragging) return;
+
+      isDragging = false;
+      lastTime = 0;
+      marquee.classList.remove("is-dragging");
+
+      if (marquee.hasPointerCapture(event.pointerId)) {
+        marquee.releasePointerCapture(event.pointerId);
+      }
+    }
+
+    marquee.addEventListener("pointerup", stopDragging);
+    marquee.addEventListener("pointercancel", stopDragging);
+    window.addEventListener("resize", measureLoop);
+    document.addEventListener("visibilitychange", () => {
+      lastTime = 0;
+    });
+
+    measureLoop();
+    render();
+    requestAnimationFrame(animate);
     track.dataset.marqueeReady = "true";
   }
 
