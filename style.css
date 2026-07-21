@@ -229,6 +229,12 @@ img {
   transform: scale(1.03);
 }
 
+.section-bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .hero::before {
   content: "";
   position: absolute;
@@ -638,11 +644,30 @@ img {
 }
 
 .why-date-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   background: url("assets/motion-blur-bg.png") center / cover no-repeat;
   text-align: center;
 }
 
+.why-date-section .section-bg-video {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.why-date-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.36);
+}
+
 .why-date-content {
+  position: relative;
+  z-index: 1;
   max-width: 880px;
 }
 
