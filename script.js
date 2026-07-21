@@ -51,6 +51,19 @@
     header.classList.toggle("is-scrolled", window.scrollY > 18);
   }
 
+  function initPhotoMarquee() {
+    const track = document.querySelector("[data-photo-track]");
+    if (!track || track.dataset.marqueeReady) return;
+
+    Array.from(track.children).forEach((item) => {
+      const clone = item.cloneNode(true);
+      clone.setAttribute("aria-hidden", "true");
+      track.appendChild(clone);
+    });
+
+    track.dataset.marqueeReady = "true";
+  }
+
   function closeMenu() {
     header.classList.remove("is-open");
     menuToggle.setAttribute("aria-expanded", "false");
@@ -81,6 +94,7 @@
   }
 
   window.addEventListener("scroll", updateHeader, { passive: true });
+  initPhotoMarquee();
   initGoogleAnalytics();
   updateHeader();
 }());
