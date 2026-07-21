@@ -865,8 +865,8 @@ img {
 
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 760ms ease var(--delay, 0ms), transform 760ms ease var(--delay, 0ms);
+  transform: translateY(54px);
+  transition: opacity 900ms ease var(--delay, 0ms), transform 900ms ease var(--delay, 0ms);
 }
 
 .reveal.is-visible {
@@ -875,15 +875,15 @@ img {
 }
 
 .fade-left {
-  transform: translateX(-34px);
+  transform: translate(-38px, 46px);
 }
 
 .fade-right {
-  transform: translateX(34px);
+  transform: translate(38px, 46px);
 }
 
 .zoom-soft {
-  transform: scale(0.96);
+  transform: translateY(34px) scale(0.96);
 }
 
 .fade-left.is-visible,

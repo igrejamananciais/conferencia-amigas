@@ -165,10 +165,11 @@
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
+        } else if (entry.boundingClientRect.top > window.innerHeight) {
+          entry.target.classList.remove("is-visible");
         }
       });
-    }, { threshold: 0.16, rootMargin: "0px 0px -40px" });
+    }, { threshold: 0.12, rootMargin: "0px 0px -12% 0px" });
 
     revealItems.forEach((item) => observer.observe(item));
   } else {
